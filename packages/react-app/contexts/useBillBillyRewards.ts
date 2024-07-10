@@ -70,6 +70,7 @@ export const useBillBillyRewards = () => {
 
         });
         let [address] = await walletClient.getAddresses();
+        console.log(address);
 
         const tx = await walletClient.writeContract({
             address: CONTRACT_ADDRESS,
