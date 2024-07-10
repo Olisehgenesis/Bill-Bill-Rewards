@@ -21,30 +21,20 @@ const publicClient = createPublicClient({
 
 // Replace with your deployed contract address
 const CONTRACT_ADDRESS = "0x289E16e6B6943AbB8Ffb80c73D32920064253f5B" as Address;
+const USDC_ADAPTER_MAINNET = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" as Address;
 
 export const useBillBillyRewards = () => {
     const [address, setAddress] = useState<Address | null>(null);
-    const [walletClient, setWalletClient] = useState<any | null>(null);
-    const [contract, setContract] = useState<any | null>(null);
 
     const getUserAddress = useCallback(async () => {
         if (typeof window !== "undefined" && window.ethereum) {
-            const client = createWalletClient({
+            const walletClient = createWalletClient({
                 transport: custom(window.ethereum),
                 chain: celoAlfajores,
             });
 
-            const [address] = await client.getAddresses();
+            const [address] = await walletClient.getAddresses();
             setAddress(address);
-            setWalletClient(client);
-
-            const contract = getContract({
-                address: CONTRACT_ADDRESS,
-                abi,
-                publicClient,
-                walletClient: client,
-            });
-            setContract(contract);
         }
     }, []);
 
@@ -53,146 +43,239 @@ export const useBillBillyRewards = () => {
     }, [getUserAddress]);
 
     const registerUser = useCallback(async (email: string, password: string, isShopper: boolean, isBusinessOwner: boolean) => {
-        if (!contract || !address) return;
-        try {
-            const tx = await contract.write.registerUser([email, password, isShopper, isBusinessOwner]);
-            await publicClient.waitForTransactionReceipt({ hash: tx });
-            console.log("User registered successfully");
-        } catch (error) {
-            console.error("Error registering user:", error);
-        }
-    }, [contract, address]);
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            functionName: "registerUser",
+            account: address,
+            args: [email, password, isShopper, isBusinessOwner],
+            feeCurrency: USDC_ADAPTER_MAINNET,
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        return receipt;
+    }, [address]);
 
     const registerStore = useCallback(async (name: string) => {
-        if (!contract || !address) return;
-        try {
-            const tx = await contract.write.registerStore([name]);
-            await publicClient.waitForTransactionReceipt({ hash: tx });
-            console.log("Store registered successfully");
-        } catch (error) {
-            console.error("Error registering store:", error);
-        }
-    }, [contract, address]);
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+
+        });
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            functionName: "registerStore",
+            account: address,
+            args: [name],
+            feeCurrency: USDC_ADAPTER_MAINNET,
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        return receipt;
+    }, [address]);
 
     const purchaseAndEarnRewards = useCallback(async (store: Address, amount: string) => {
-        if (!contract || !address) return;
-        try {
-            const tx = await contract.write.purchaseAndEarnRewards([store, parseEther(amount)]);
-            await publicClient.waitForTransactionReceipt({ hash: tx });
-            console.log("Purchase successful and rewards earned");
-        } catch (error) {
-            console.error("Error in purchase:", error);
-        }
-    }, [contract, address]);
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            functionName: "purchaseAndEarnRewards",
+            account: address,
+            args: [store, parseEther(amount)],
+            feeCurrency: USDC_ADAPTER_MAINNET,
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        return receipt;
+    }, [address]);
 
     const referProduct = useCallback(async (referredUser: Address) => {
-        if (!contract || !address) return;
-        try {
-            const tx = await contract.write.referProduct([referredUser]);
-            await publicClient.waitForTransactionReceipt({ hash: tx });
-            console.log("Product referred successfully");
-        } catch (error) {
-            console.error("Error referring product:", error);
-        }
-    }, [contract, address]);
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            functionName: "referProduct",
+            account: address,
+            args: [referredUser],
+            feeCurrency: USDC_ADAPTER_MAINNET
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        return receipt;
+    }, [address]);
 
     const createGiftCard = useCallback(async (value: string, pointCost: number) => {
-        if (!contract || !address) return;
-        try {
-            const tx = await contract.write.createGiftCard([parseEther(value), BigInt(pointCost)]);
-            await publicClient.waitForTransactionReceipt({ hash: tx });
-            console.log("Gift card created successfully");
-        } catch (error) {
-            console.error("Error creating gift card:", error);
-        }
-    }, [contract, address]);
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            functionName: "createGiftCard",
+            account: address,
+            args: [parseEther(value), BigInt(pointCost)],
+            feeCurrency: USDC_ADAPTER_MAINNET
+
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        return receipt;
+    }, [address]);
 
     const awardGiftCard = useCallback(async (giftCardId: number, recipient: Address) => {
-        if (!contract || !address) return;
-        try {
-            const tx = await contract.write.awardGiftCard([BigInt(giftCardId), recipient]);
-            await publicClient.waitForTransactionReceipt({ hash: tx });
-            console.log("Gift card awarded successfully");
-        } catch (error) {
-            console.error("Error awarding gift card:", error);
-        }
-    }, [contract, address]);
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            functionName: "awardGiftCard",
+            account: address,
+            args: [BigInt(giftCardId), recipient],
+            feeCurrency: USDC_ADAPTER_MAINNET
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        return receipt;
+    }, [address]);
 
     const getStorePoints = useCallback(async (user: Address, store: Address) => {
-        if (!contract) return null;
-        try {
-            const points = await contract.read.getStorePoints([user, store]);
-            return Number(points);
-        } catch (error) {
-            console.error("Error getting store points:", error);
-            return null;
-        }
-    }, [contract]);
+
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        let [address] = await walletClient.getAddresses();
+
+        const contract = getContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            client: walletClient,
+        });
+
+        const points = await contract.read.getStorePoints([user, store]);
+        return Number(points);
+    }, [address]);
 
     const getTotalPoints = useCallback(async (user: Address) => {
-        if (!contract) return null;
-        try {
-            const points = await contract.read.getTotalPoints([user]);
-            return Number(points);
-        } catch (error) {
-            console.error("Error getting total points:", error);
-            return null;
-        }
-    }, [contract]);
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        const contract = getContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            client: walletClient,
+        });
+
+        const points = await contract.read.getTotalPoints([user]);
+        return Number(points);
+    }, [address]);
 
     const getUserDetails = useCallback(async (user: Address) => {
-        if (!contract) return null;
-        try {
-            const details = await contract.read.users([user]);
-            return {
-                email: details[0],
-                isShopper: details[2],
-                isBusinessOwner: details[3],
-                totalPoints: Number(details[4]),
-                tier: Number(details[5]),
-                referrals: Number(details[6]),
-            };
-        } catch (error) {
-            console.error("Error getting user details:", error);
-            return null;
-        }
-    }, [contract]);
+        if (!address) return null;
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        const contract = getContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            client: walletClient,
+        });
+
+        const details = await contract.read.users([user]);
+        return {
+            email: details[0],
+            isShopper: details[2],
+            isBusinessOwner: details[3],
+            totalPoints: Number(details[4]),
+            tier: Number(details[5]),
+            referrals: Number(details[6]),
+        };
+    }, [address]);
 
     const getStoreDetails = useCallback(async (store: Address) => {
-        if (!contract) return null;
-        try {
-            const details = await contract.read.stores([store]);
-            return {
-                name: details[0],
-                owner: details[1],
-                isActive: details[2],
-            };
-        } catch (error) {
-            console.error("Error getting store details:", error);
-            return null;
-        }
-    }, [contract]);
+        if (!address) return null;
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        const contract = getContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            client: walletClient,
+        });
+
+        const details = await contract.read.stores([store]);
+        return {
+            name: details[0],
+            owner: details[1],
+            isActive: details[2],
+        };
+    }, [address]);
 
     const getGiftCardDetails = useCallback(async (giftCardId: number) => {
-        if (!contract) return null;
-        try {
-            const details = await contract.read.giftCards([BigInt(giftCardId)]);
-            return {
-                id: Number(details[0]),
-                storeAddress: details[1],
-                value: formatEther(details[2]),
-                pointCost: Number(details[3]),
-                isActive: details[4],
-            };
-        } catch (error) {
-            console.error("Error getting gift card details:", error);
-            return null;
-        }
-    }, [contract]);
+        if (!address) return null;
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        const contract = getContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            client: walletClient,
+        });
+
+        const details = await contract.read.giftCards([BigInt(giftCardId)]);
+        return {
+            id: Number(details[0]),
+            storeAddress: details[1],
+            value: formatEther(details[2]),
+            pointCost: Number(details[3]),
+            isActive: details[4],
+        };
+    }, [address]);
 
     return {
         address,
-        contract,
         registerUser,
         registerStore,
         purchaseAndEarnRewards,

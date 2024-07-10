@@ -2,7 +2,7 @@
 import PrimaryButton from "@/components/Button";
 import { useBillBillyRewards } from "@/contexts/useBillBillyRewards";
 import  RegisterPage  from "../components/Register";
-//import HomePage from "../components/HomePage"; // Assuming you have a HomePage component
+import  DashBoard  from "../components/Dashboard";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -31,7 +31,7 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            {isRegistered ? <RegisterPage /> : <RegisterPage />}
+            {isRegistered ? <DashBoard /> : <RegisterPage />}
         </div>
     );
 }

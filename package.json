@@ -26,5 +26,8 @@
   "keywords": [
     "celo-composer",
     "celo"
-  ]
+  ],
+  "dependencies": {
+    "react-icons": "^5.2.1"
+  }
 }
