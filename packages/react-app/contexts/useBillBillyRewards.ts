@@ -20,7 +20,7 @@ const publicClient = createPublicClient({
 });
 
 // Replace with your deployed contract address
-const CONTRACT_ADDRESS = "0x289E16e6B6943AbB8Ffb80c73D32920064253f5B" as Address;
+const CONTRACT_ADDRESS = "0x321600d595340eEE40dA5e932d97AfeA616898dd" as Address;
 const USDC_ADAPTER_MAINNET = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" as Address;
 
 export const useBillBillyRewards = () => {
@@ -64,6 +64,7 @@ export const useBillBillyRewards = () => {
     }, [address]);
 
     const registerStore = useCallback(async (name: string) => {
+        console.log("registering store with name:", name);
         const walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -82,6 +83,7 @@ export const useBillBillyRewards = () => {
         });
 
         const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        console.log(receipt);
         return receipt;
     }, [address]);
 
