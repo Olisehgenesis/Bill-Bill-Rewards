@@ -255,10 +255,7 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
                     <div className="bg-white p-6 rounded-lg">
                         <h3 className="text-xl font-bold mb-4">Available Shops</h3>
                         {/* Add shop list here */}
-                        <a
-    href="/shops"
-    onClick={() => setShowShops(false)}  // Ensure modal closes when link is clicked
-    className="mt-4 p-2 bg-red-600 text-white rounded-md inline-block"
+                        <a href="/shops" onClick={() => setShowShops(false)}  // Ensure modal closes when link is clicked className="mt-4 p-2 bg-red-600 text-white rounded-md inline-block"
 >
     Go to Shops
 </a>
