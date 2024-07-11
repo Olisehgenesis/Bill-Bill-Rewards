@@ -24,8 +24,17 @@ export default function Header() {
                   <p>Bill Billy Rewards</p>
                 </div>
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  <a className="inline-flex items-center border-b-2 border-black px-1 pt-1 text-sm font-medium text-gray-900">
+                  <a
+                    href="/"
+                    className="inline-flex items-center border-b-2 border-black px-1 pt-1 text-sm font-medium text-gray-900"
+                  >
                     Home
+                  </a>
+                  <a
+                    href="/shops"
+                    className="inline-flex items-center border-b-2 border-black px-1 pt-1 text-sm font-medium text-gray-900"
+                  >
+                    Shops
                   </a>
                 </div>
               </div>
@@ -36,10 +45,17 @@ export default function Header() {
             <div className="space-y-1 pt-2 pb-4">
               <Disclosure.Button
                 as="a"
-                href="#"
+                href="/"
                 className="block border-l-4 border-black py-2 pl-3 pr-4 text-base font-medium text-black"
               >
                 Home
+              </Disclosure.Button>
+              <Disclosure.Button
+                as="a"
+                href="/shops"
+                className="block border-l-4 border-black py-2 pl-3 pr-4 text-base font-medium text-black"
+              >
+                Shops
               </Disclosure.Button>
               {/* Add here your custom menu elements */}
             </div>
