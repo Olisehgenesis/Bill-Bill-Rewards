@@ -222,4 +222,74 @@ contract BillBuddyRewards {
         uint256 balance = cUsdToken.balanceOf(address(this));
         require(cUsdToken.transfer(owner, balance), "Transfer failed");
     }
+    // Add these functions to the BillBillyRewards contract
+
+// Read User Details
+function getUserDetails(address _user) public view returns (
+    string memory email,
+    bool isShopper,
+    bool isBusinessOwner,
+    uint256 totalPoints,
+    uint256 tier,
+    uint256 referrals
+) {
+    User storage user = users[_user];
+    return (
+        user.email,
+        user.isShopper,
+        user.isBusinessOwner,
+        user.totalPoints,
+        user.tier,
+        user.referrals
+    );
+}
+
+// Read Store Details
+function getStoreDetails(address _store) public view returns (
+    string memory name,
+    address owner,
+    bool isActive
+) {
+    Store storage store = stores[_store];
+    return (store.name, store.owner, store.isActive);
+}
+
+// Read Gift Card Details
+function getGiftCardDetails(uint256 _giftCardId) public view returns (
+    address storeAddress,
+    uint256 value,
+    uint256 pointCost,
+    bool isActive
+) {
+    GiftCard storage giftCard = giftCards[_giftCardId];
+    return (
+        giftCard.storeAddress,
+        giftCard.value,
+        giftCard.pointCost,
+        giftCard.isActive
+    );
+}
+
+// List User's Gift Cards (returns up to 10 active gift cards for a user)
+function listUserGiftCards(address _user) public view returns (uint256[] memory) {
+    uint256[] memory userGiftCards = new uint256[](10);
+    uint256 count = 0;
+    
+    for (uint256 i = 1; i <= giftCardCounter && count < 10; i++) {
+        if (giftCards[i].isActive && users[_user].storePoints[giftCards[i].storeAddress] >= giftCards[i].pointCost) {
+            userGiftCards[count] = i;
+            count++;
+        }
+    }
+    
+    // Resize the array to the actual count
+    assembly { mstore(userGiftCards, count) }
+    
+    return userGiftCards;
+}
+
+// Get User Tier
+function getUserTier(address _user) public view returns (uint256) {
+    return users[_user].tier;
+}
 }

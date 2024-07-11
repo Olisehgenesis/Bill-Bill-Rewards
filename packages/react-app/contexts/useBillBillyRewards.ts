@@ -20,7 +20,7 @@ const publicClient = createPublicClient({
 });
 
 // Replace with your deployed contract address
-const CONTRACT_ADDRESS = "0x321600d595340eEE40dA5e932d97AfeA616898dd" as Address;
+const CONTRACT_ADDRESS = "0x4981e40fD403E07Cf8083971f4d7187A55B5da7E" as Address;
 const USDC_ADAPTER_MAINNET = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" as Address;
 
 export const useBillBillyRewards = () => {
@@ -43,7 +43,6 @@ export const useBillBillyRewards = () => {
     }, [getUserAddress]);
 
     const registerUser = useCallback(async (email: string, password: string, isShopper: boolean, isBusinessOwner: boolean) => {
-
         const walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -68,7 +67,6 @@ export const useBillBillyRewards = () => {
         const walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
-
         });
         let [address] = await walletClient.getAddresses();
         console.log(address);
@@ -128,7 +126,6 @@ export const useBillBillyRewards = () => {
     }, [address]);
 
     const createGiftCard = useCallback(async (value: string, pointCost: number) => {
-
         const walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -142,7 +139,6 @@ export const useBillBillyRewards = () => {
             account: address,
             args: [parseEther(value), BigInt(pointCost)],
             feeCurrency: USDC_ADAPTER_MAINNET
-
         });
 
         const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
@@ -150,7 +146,6 @@ export const useBillBillyRewards = () => {
     }, [address]);
 
     const awardGiftCard = useCallback(async (giftCardId: number, recipient: Address) => {
-
         const walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -171,8 +166,6 @@ export const useBillBillyRewards = () => {
     }, [address]);
 
     const getStorePoints = useCallback(async (user: Address, store: Address) => {
-
-
         const walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -190,7 +183,6 @@ export const useBillBillyRewards = () => {
     }, [address]);
 
     const getTotalPoints = useCallback(async (user: Address) => {
-
         const walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -220,14 +212,14 @@ export const useBillBillyRewards = () => {
             client: walletClient,
         });
 
-        const details = await contract.read.users([user]);
+        const details = await contract.read.getUserDetails([user]);
         return {
             email: details[0],
-            isShopper: details[2],
-            isBusinessOwner: details[3],
-            totalPoints: Number(details[4]),
-            tier: Number(details[5]),
-            referrals: Number(details[6]),
+            isShopper: details[1],
+            isBusinessOwner: details[2],
+            totalPoints: Number(details[3]),
+            tier: Number(details[4]),
+            referrals: Number(details[5]),
         };
     }, [address]);
 
@@ -245,7 +237,7 @@ export const useBillBillyRewards = () => {
             client: walletClient,
         });
 
-        const details = await contract.read.stores([store]);
+        const details = await contract.read.getStoreDetails([store]);
         return {
             name: details[0],
             owner: details[1],
@@ -267,14 +259,49 @@ export const useBillBillyRewards = () => {
             client: walletClient,
         });
 
-        const details = await contract.read.giftCards([BigInt(giftCardId)]);
+        const details = await contract.read.getGiftCardDetails([BigInt(giftCardId)]);
         return {
-            id: Number(details[0]),
-            storeAddress: details[1],
-            value: formatEther(details[2]),
-            pointCost: Number(details[3]),
-            isActive: details[4],
+            storeAddress: details[0],
+            value: formatEther(details[1]),
+            pointCost: Number(details[2]),
+            isActive: details[3],
         };
+    }, [address]);
+
+    const listUserGiftCards = useCallback(async (user: Address) => {
+        if (!address) return null;
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        const contract = getContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            client: walletClient,
+        });
+
+        const giftCardIds = await contract.read.listUserGiftCards([user]);
+        return giftCardIds.map(Number);
+    }, [address]);
+
+    const getUserTier = useCallback(async (user: Address) => {
+        if (!address) return null;
+
+        const walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        const contract = getContract({
+            address: CONTRACT_ADDRESS,
+            abi: abi,
+            client: walletClient,
+        });
+
+        const tier = await contract.read.getUserTier([user]);
+        return Number(tier);
     }, [address]);
 
     return {
@@ -290,5 +317,7 @@ export const useBillBillyRewards = () => {
         getUserDetails,
         getStoreDetails,
         getGiftCardDetails,
+        listUserGiftCards,
+        getUserTier,
     };
 };

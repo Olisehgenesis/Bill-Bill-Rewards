@@ -61,6 +61,69 @@
     },
     {
         "type": "function",
+        "name": "getGiftCardDetails",
+        "inputs": [
+            {
+                "name": "_giftCardId",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "storeAddress",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "value",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "pointCost",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "isActive",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getStoreDetails",
+        "inputs": [
+            {
+                "name": "_store",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "name",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "owner",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "isActive",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
         "name": "getStorePoints",
         "inputs": [
             {
@@ -86,6 +149,69 @@
     {
         "type": "function",
         "name": "getTotalPoints",
+        "inputs": [
+            {
+                "name": "_user",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getUserDetails",
+        "inputs": [
+            {
+                "name": "_user",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "email",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "isShopper",
+                "type": "bool",
+                "internalType": "bool"
+            },
+            {
+                "name": "isBusinessOwner",
+                "type": "bool",
+                "internalType": "bool"
+            },
+            {
+                "name": "totalPoints",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "tier",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "referrals",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getUserTier",
         "inputs": [
             {
                 "name": "_user",
@@ -150,6 +276,25 @@
                 "name": "isActive",
                 "type": "bool",
                 "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "listUserGiftCards",
+        "inputs": [
+            {
+                "name": "_user",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256[]",
+                "internalType": "uint256[]"
             }
         ],
         "stateMutability": "view"
