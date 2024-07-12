@@ -21,7 +21,7 @@ export default function Header() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center text-white font-semibold text-2xl">
-                  <p>Bill Billy Rewards</p>
+                  <p>Reward Tribe</p>
                 </div>
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                   <a

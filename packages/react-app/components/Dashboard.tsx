@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import OwnerDashboard from "./ownerDashboard";
 import ShopperDashboard from "./shopperDashboard";
-import { useBillBillyRewards } from "../contexts/useBillBillyRewards";
+import { useBillBillyRewards } from "../contexts/useRewardTribe";
 import { Switch } from "@headlessui/react";
 
 const Dashboard: React.FC = () => {
@@ -50,6 +50,7 @@ const Dashboard: React.FC = () => {
             {isOwner ? (
                 <OwnerDashboard
                     address={address}
+                    registerUser={registerUser}
                     registerStore={registerStore}
                     createGiftCard={createGiftCard}
                     awardGiftCard={awardGiftCard}

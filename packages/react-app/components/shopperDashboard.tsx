@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Address } from "viem";
 import { FaUserPlus, FaShoppingCart, FaShare, FaInfoCircle, FaCoins, FaStore, FaQrcode } from "react-icons/fa";
 import { checkCUSDBalance } from "../contexts/checkUSDBalance";
+import {
+    createPublicClient,
+    createWalletClient,
+    custom,
+    getContract,
+    http,
+    parseEther,
+} from "viem";
 
+import { celoAlfajores } from "viem/chains";
 interface ShopperDashboardProps {
     address: Address | null;
     registerUser: (email: string, password: string, isShopper: boolean, isBusinessOwner: boolean) => Promise<void>;
@@ -42,32 +51,39 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
     const [showQRScanner, setShowQRScanner] = useState(false);
     const [scannedAddress, setScannedAddress] = useState("");
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+    const [isRegistered, setIsRegistered] = useState<boolean>(false);
 
+    
     useEffect(() => {
         const fetchData = async () => {
+            let walletClient = createWalletClient({
+                transport: custom(window.ethereum),
+                chain: celoAlfajores,
+            });
+            let [address] = await walletClient.getAddresses();
             if (address) {
-                const userBalance = await checkCUSDBalance(address as string);
-                setBalance(userBalance);
-
-                const points = await getTotalPoints(address);
-                setTotalPoints(points || 0);
-
                 const details = await getUserDetails(address);
                 if (details) {
+                   
                     setUserDetails(details);
-
+                    alert(userDetails);
+                    setIsRegistered(true);  // Add this line
+                    const userBalance = await checkCUSDBalance(address as string);
+                    setBalance(userBalance);
+                    const points = await getTotalPoints(address);
+                    setTotalPoints(points || 0);
                     const userGiftCards = await listUserGiftCards(address);
                     setGiftCards(userGiftCards);
-
                     const tier = await getUserTier(address);
                     setUserTier(tier);
                 }
             }
         };
-
+    
         fetchData();
     }, [address, getTotalPoints, getUserDetails, listUserGiftCards, getUserTier]);
 
+    
     const handleRegister = async () => {
         try {
             await registerUser(email, password, isShopper, isBusinessOwner);
@@ -75,13 +91,13 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
             if (address) {
                 const details = await getUserDetails(address);
                 setUserDetails(details);
+                setIsRegistered(true);  // Add this line
             }
         } catch (error) {
             console.error("Error registering user:", error);
-            alert("Failed to register user. Please try again.");
+            alert(error);
         }
     };
-
     const handlePurchase = async () => {
         try {
             await purchaseAndEarnRewards(storeAddress as Address, purchaseAmount);
@@ -89,7 +105,7 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
             setShowPurchaseModal(false);
         } catch (error) {
             console.error("Error making purchase:", error);
-            alert("Failed to make purchase. Please try again.");
+            alert(error);
         }
     };
 
@@ -113,7 +129,7 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
         setShowPurchaseModal(true);
     };
 
-    if (!userDetails || !userDetails.email) {
+    if (!isRegistered) {
         return (
             <div className="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
                 <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">Shopper Registration</h2>
@@ -210,10 +226,11 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
             <div className="mb-6 bg-white p-4 rounded-lg shadow-md">
                 <h3 className="text-xl font-bold mb-2 text-gray-800">User Details</h3>
                 <div className="grid grid-cols-2 gap-2">
-                    <p><span className="font-semibold">Email:</span> {userDetails.email}</p>
+                    
+                    <p><span className="font-semibold">Email:</span> {userDetails[0]}</p>
                     <p><span className="font-semibold">Tier:</span> {userTier}</p>
-                    <p><span className="font-semibold">Total Points:</span> {userDetails.totalPoints}</p>
-                    <p><span className="font-semibold">Referrals:</span> {userDetails.referrals}</p>
+                    <p><span className="font-semibold">Total Points:</span>{totalPoints}</p>
+                    <p><span className="font-semibold">Referrals:</span> {userDetails[3]}</p>
                 </div>
             </div>
 

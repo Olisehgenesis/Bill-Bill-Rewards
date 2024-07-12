@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useBillBillyRewards } from '../contexts/useBillBillyRewards';
+import { useRewardTribe } from '../contexts/useRewardTribe';
 
 function RegisterPage() {
-  const { registerUser } = useBillBillyRewards();
+  const { registerUser } = useRewardTribe();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isShopper, setIsShopper] = useState(true);

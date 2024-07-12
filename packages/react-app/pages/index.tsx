@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PrimaryButton from "@/components/Button";
-import { useBillBillyRewards } from "@/contexts/useBillBillyRewards";
-import  RegisterPage  from "../components/Register";
+import { useRewardTribe } from "@/contexts/useRewardTribe";
 import  DashBoard  from "../components/Dashboard";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-    const { address, getUserDetails } = useBillBillyRewards();
+    const { address, getUserDetails } = useRewardTribe();
     const [isRegistered, setIsRegistered] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -31,7 +30,8 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            {isRegistered ? <DashBoard /> : <RegisterPage />}
+            {/* {isRegistered ? <DashBoard /> : <RegisterPage />} */}
+            <DashBoard />
         </div>
     );
 }
