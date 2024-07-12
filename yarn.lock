@@ -4031,6 +4031,11 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
+dot-env@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/dot-env/-/dot-env-0.0.1.tgz#e4434cb8c69143e445bc28a729437e4fabd88c80"
+  integrity sha512-SajHtzm3v7yjMH8DW9xY+4i7Zv/cN3aMtLVy0mRMuZu8L9qRCR7CNqcl4KBbG27e5Up4BpSlEyPXXLNbSAe2DQ==
+
 dotenv@^16.4.3:
   version "16.4.3"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.3.tgz#481235ec516c4e47d2612a478482ee36607f70c1"

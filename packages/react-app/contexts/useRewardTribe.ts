@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import BillBuddyRewardsABI from "../contexts/RewardTribe-abi.json";
+import RewardTribeABI from "../contexts/RewardTribe-abi.json";
 import {
     createPublicClient,
     createWalletClient,
@@ -9,32 +9,33 @@ import {
     parseEther,
 } from "viem";
 import { celoAlfajores } from "viem/chains";
-import { env } from "process";
 
 const publicClient = createPublicClient({
     chain: celoAlfajores,
     transport: http(),
 });
-//load variables from .env
-const variables = {
-    "TESTNET": {
-        "REWARD_TRIBE_ADDRESS": env.REWARD_TRIBE_ADDRESS_TESTNET,
-        "cUSDTokenAddress": env.cUSDTokenAddress_TESTNET
-    },
-    "MAINNET": {
-        "REWARD_TRIBE_ADDRESS": env.REWARD_TRIBE_ADDRESS_MAINNET,
-        "cUSDTokenAddress": env.cUSDTokenAddress_MAINNET
-    }
-}
-
-const environment = env.NODE_ENV as "TESTNET" | "MAINNET";
 
 
 
-const REWARD_TRIBE_ADDRESS_TESTNET = variables[environment]["REWARD_TRIBE_ADDRESS"];
-const cUSDTokenAddress = variables[environment]["cUSDTokenAddress"];
 export const useRewardTribe = () => {
+    const environment = process.env.NEXT_PUBLIC_ENV_MODE as "TESTNET" | "MAINNET";
+
+    console.log("Environment: " + environment);
+
+    // environment = "TESTNET";
+
+    const REWARD_TRIBE_ADDRESS = environment === "TESTNET"
+        ? process.env.NEXT_PUBLIC_REWARD_TRIBE_ADDRESS_TESTNET as `0x${string}`
+        : process.env.NEXT_PUBLIC_REWARD_TRIBE_ADDRESS_MAINNET as `0x${string}`;
+
+    const cUSDTokenAddress = environment === "TESTNET"
+        ? process.env.NEXT_PUBLIC_cUSDTokenAddress_TESTNET as `0x${string}`
+        : process.env.NEXT_PUBLIC_cUSDTokenAddress_MAINNET as `0x${string}`;
+
+    console.log("Reward Tribe Address: " + REWARD_TRIBE_ADDRESS);
+    console.log("cUSD Token Address: " + cUSDTokenAddress);
     const [address, setAddress] = useState<string | null>(null);
+
 
     const getUserAddress = async () => {
         if (typeof window !== "undefined" && window.ethereum) {
@@ -55,11 +56,11 @@ export const useRewardTribe = () => {
         });
 
         let [address] = await walletClient.getAddresses();
-
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+            address: REWARD_TRIBE_ADDRESS
             ,
-            abi: BillBuddyRewardsABI,
+            abi: RewardTribeABI
+            ,
             functionName: "registerUser",
             account: address,
             args: [email, password, isShopper, isBusinessOwner],
@@ -82,9 +83,10 @@ export const useRewardTribe = () => {
         let [address] = await walletClient.getAddresses();
 
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+            address: REWARD_TRIBE_ADDRESS
             ,
-            abi: BillBuddyRewardsABI,
+            abi: RewardTribeABI
+            ,
             functionName: "registerStore",
             account: address,
             args: [name],
@@ -109,9 +111,10 @@ export const useRewardTribe = () => {
         const amountInWei = parseEther(amount);
 
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+            address: REWARD_TRIBE_ADDRESS
             ,
-            abi: BillBuddyRewardsABI,
+            abi: RewardTribeABI
+            ,
             functionName: "purchaseAndEarnRewards",
             account: address,
             args: [storeAddress, amountInWei],
@@ -136,9 +139,10 @@ export const useRewardTribe = () => {
         const valueInWei = parseEther(value);
 
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+            address: REWARD_TRIBE_ADDRESS
             ,
-            abi: BillBuddyRewardsABI,
+            abi: RewardTribeABI
+            ,
             functionName: "createGiftCard",
             account: address,
             args: [valueInWei, pointCost, quality],
@@ -160,9 +164,10 @@ export const useRewardTribe = () => {
         let [address] = await walletClient.getAddresses();
 
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+            address: REWARD_TRIBE_ADDRESS
             ,
-            abi: BillBuddyRewardsABI,
+            abi: RewardTribeABI
+            ,
             functionName: "awardGiftCard",
             account: address,
             args: [giftCardId, recipient],
@@ -177,14 +182,15 @@ export const useRewardTribe = () => {
     }, []);
 
     const getStorePoints = useCallback(async (user: string, store: string) => {
-        const billBuddyContract = getContract({
-            abi: BillBuddyRewardsABI,
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+        const RewardTribeContract = getContract({
+            abi: RewardTribeABI
+            ,
+            address: REWARD_TRIBE_ADDRESS
             ,
             client: publicClient,
         });
 
-        const points = await billBuddyContract.read.getStorePoints([user, store]);
+        const points = await RewardTribeContract.read.getStorePoints([user, store]);
         return points;
     }, []);
     const getUserTier = useCallback(async (user: string) => {
@@ -202,9 +208,10 @@ export const useRewardTribe = () => {
         let [address] = await walletClient.getAddresses();
 
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+            address: REWARD_TRIBE_ADDRESS
             ,
-            abi: BillBuddyRewardsABI,
+            abi: RewardTribeABI
+            ,
             functionName: "mintRoyaltyGiftCard",
             account: address,
             args: [giftCardId],
@@ -227,9 +234,10 @@ export const useRewardTribe = () => {
         let [address] = await walletClient.getAddresses();
 
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+            address: REWARD_TRIBE_ADDRESS
             ,
-            abi: BillBuddyRewardsABI,
+            abi: RewardTribeABI
+            ,
             functionName: "referProduct",
             account: address,
             args: [referredUser],
@@ -244,77 +252,84 @@ export const useRewardTribe = () => {
     }, []);
 
     const getUserDetails = useCallback(async (userAddress: string) => {
-        const billBuddyContract = getContract({
-            abi: BillBuddyRewardsABI,
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+        const RewardTribeContract = getContract({
+            abi: RewardTribeABI
+            ,
+            address: REWARD_TRIBE_ADDRESS
             ,
             client: publicClient,
         });
-
-        const userDetails = await billBuddyContract.read.getUserDetails([userAddress]);
+        const userDetails = await RewardTribeContract.read.getUserDetails([userAddress]);
         return userDetails;
     }, []);
 
     const getAllStores = useCallback(async () => {
-        const billBuddyContract = getContract({
-            abi: BillBuddyRewardsABI,
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+        const RewardTribeContract = getContract({
+            abi: RewardTribeABI
+            ,
+            address: REWARD_TRIBE_ADDRESS
             ,
             client: publicClient,
         });
 
-        const stores = await billBuddyContract.read.getAllStores();
+        const stores = await RewardTribeContract.read.getAllStores();
         return stores;
     }, []);
 
     const getGiftCardDetails = useCallback(async (giftCardId: number) => {
-        const billBuddyContract = getContract({
-            abi: BillBuddyRewardsABI,
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+        const RewardTribeContract = getContract({
+            abi: RewardTribeABI
+            ,
+            address: REWARD_TRIBE_ADDRESS
             ,
             client: publicClient,
         });
 
-        const giftCardDetails = await billBuddyContract.read.getGiftCardDetails([giftCardId]);
+        const giftCardDetails = await RewardTribeContract.read.getGiftCardDetails([giftCardId]);
         return giftCardDetails;
     }, []);
     const getTotalPoints = useCallback(async (user: string) => {
-        const billBuddyContract = getContract({
-            abi: BillBuddyRewardsABI,
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+        const RewardTribeContract = getContract({
+            abi: RewardTribeABI
+            ,
+            address: REWARD_TRIBE_ADDRESS
             ,
             client: publicClient,
         });
 
-        const points = await billBuddyContract.read.getTotalPoints([user]);
+        const points = await RewardTribeContract.read.getTotalPoints([user]);
         return points;
     }, []);
 
     const listUserGiftCards = useCallback(async (userAddress: string) => {
-        const billBuddyContract = getContract({
-            abi: BillBuddyRewardsABI,
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+        const RewardTribeContract = getContract({
+            abi: RewardTribeABI
+            ,
+            address: REWARD_TRIBE_ADDRESS
             ,
             client: publicClient,
         });
 
-        const userGiftCards = await billBuddyContract.read.listUserGiftCards([userAddress]);
+        const userGiftCards = await RewardTribeContract.read.listUserGiftCards([userAddress]);
         return userGiftCards;
     }, []);
     const getStoreDetails = useCallback(async (storeAddress: string) => {
-        const billBuddyContract = getContract({
-            abi: BillBuddyRewardsABI,
-            address: REWARD_TRIBE_ADDRESS_TESTNET
+        const RewardTribeContract = getContract({
+            abi: RewardTribeABI
+            ,
+            address: REWARD_TRIBE_ADDRESS
             ,
             client: publicClient,
         });
 
-        const storeDetails = await billBuddyContract.read.stores([storeAddress]);
+        const storeDetails = await RewardTribeContract.read.stores([storeAddress]);
         return storeDetails;
     }, []);
 
     return {
         address,
+        REWARD_TRIBE_ADDRESS,
+        cUSDTokenAddress,
         getUserAddress,
         registerUser,
         registerStore,

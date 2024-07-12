@@ -99,7 +99,7 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
                 }
             } catch (error) {
                 console.error("Error registering store:", error);
-                alert(error);
+                
             }
         }
     };

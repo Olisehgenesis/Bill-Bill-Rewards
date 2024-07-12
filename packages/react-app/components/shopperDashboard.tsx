@@ -64,10 +64,8 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
             if (address) {
                 const details = await getUserDetails(address);
                 if (details) {
-                   
                     setUserDetails(details);
-                    alert(userDetails);
-                    setIsRegistered(true);  // Add this line
+                    setIsRegistered(true);
                     const userBalance = await checkCUSDBalance(address as string);
                     setBalance(userBalance);
                     const points = await getTotalPoints(address);
@@ -86,9 +84,10 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
     
     const handleRegister = async () => {
         try {
+            
             await registerUser(email, password, isShopper, isBusinessOwner);
-            alert("User registered successfully!");
             if (address) {
+                alert(address)
                 const details = await getUserDetails(address);
                 setUserDetails(details);
                 setIsRegistered(true);  // Add this line

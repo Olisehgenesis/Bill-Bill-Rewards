@@ -1,19 +1,89 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FaStore, FaShoppingCart } from 'react-icons/fa';
+import { createPublicClient, http, createWalletClient, custom } from 'viem';
+import { celoAlfajores } from 'viem/chains';
+import RewardTribeABI from '../contexts/RewardTribe-abi.json'; // Make sure to import your contract ABI
 
-// Mock data for shops (replace this with actual data from your backend)
-const shopData = [
-  { id: 1, name: 'Grocery Store', address: '0x1234...5678', description: 'Fresh produce and everyday essentials' },
-  { id: 2, name: 'Electronics Hub', address: '0x2345...6789', description: 'Latest gadgets and tech accessories' },
-  { id: 3, name: 'Fashion Boutique', address: '0x3456...7890', description: 'Trendy clothing and accessories' },
-  { id: 4, name: 'Home Decor', address: '0x4567...8901', description: 'Beautiful items for your living space' },
-];
+const REWARD_TRIBE_ADDRESS = 'YOUR_CONTRACT_ADDRESS_HERE';
+const cUSDTokenAddress = 'YOUR_cUSD_TOKEN_ADDRESS_HERE';
+
+interface Shop {
+  id: string;
+  name: string;
+  address: string;
+  description: string;
+}
 
 function Shops() {
-  const handlePay = (shopAddress: string) => {
-    // Implement payment logic here
-    console.log(`Initiating payment to shop: ${shopAddress}`);
-  };
+  const [shops, setShops] = useState<Shop[]>([]);
+
+  const publicClient = createPublicClient({
+    chain: celoAlfajores,
+    transport: http()
+  });
+
+  const fetchShops = useCallback(async () => {
+    try {
+      const storeAddresses = await publicClient.readContract({
+        address: REWARD_TRIBE_ADDRESS,
+        abi: RewardTribeABI,
+        functionName: 'getAllStores',
+      }) as string[];
+
+      const shopPromises = storeAddresses.map(async (address) => {
+        const storeDetails = await publicClient.readContract({
+          address: REWARD_TRIBE_ADDRESS,
+          abi: RewardTribeABI,
+          functionName: 'getStoreDetails',
+          args: [address],
+        }) as [string, string, boolean];
+
+        return {
+          id: address,
+          name: storeDetails[0],
+          address: address,
+          description: "Store on RewardTribe" // You might want to add a description field to your smart contract if needed
+        };
+      });
+
+      const shopData = await Promise.all(shopPromises);
+      setShops(shopData);
+    } catch (error) {
+      console.error("Error fetching shops:", error);
+    }
+  }, [publicClient]);
+
+  useEffect(() => {
+    fetchShops();
+  }, [fetchShops]);
+
+  const handlePay = useCallback(async (shopAddress: string) => {
+    try {
+      let walletClient = createWalletClient({
+        transport: custom(window.ethereum),
+        chain: celoAlfajores,
+      });
+
+      let [address] = await walletClient.getAddresses();
+
+      const tx = await walletClient.writeContract({
+        address: REWARD_TRIBE_ADDRESS,
+        abi: RewardTribeABI,
+        functionName: "purchaseAndEarnRewards",
+        account: address,
+        args: [shopAddress, BigInt(100000000000000000)], // 0.1 cUSD as an example
+        feeCurrency: cUSDTokenAddress,
+      });
+
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: tx,
+      });
+
+      console.log(`Payment to shop ${shopAddress} successful`, receipt);
+    } catch (error) {
+      console.error("Error processing payment:", error);
+    }
+  }, [publicClient]);
 
   return (
     <div className="max-w-4xl mx-auto p-4 border-2 border-gray-300 rounded-lg shadow-md">
@@ -22,7 +92,7 @@ function Shops() {
         Available Shops
       </h1>
       <div className="grid grid-cols-1 gap-6">
-        {shopData.map((shop) => (
+        {shops.map((shop) => (
           <div key={shop.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 border border-gray-200">
             <div className="p-4">
               <h2 className="text-lg font-semibold mb-2 text-gray-800">{shop.name}</h2>
