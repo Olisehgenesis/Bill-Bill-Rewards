@@ -13,6 +13,121 @@ import {
     FaEdit,
 } from "react-icons/fa";
 import { checkCUSDBalance } from "../contexts/checkUSDBalance";
+const RegisterStoreForm = ({ onRegister, onClose }) => {
+    const [storeData, setStoreData] = useState({
+      name: '',
+      description: '',
+      phoneNumber: '',
+      email: '',
+      physicalLocation: ''
+    });
+  
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setStoreData(prevData => ({
+        ...prevData,
+        [name]: value
+      }));
+    };
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      onRegister(storeData);
+    };
+  
+    return (
+      <Transition appear show={true} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={onClose}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+  
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Register Store
+                  </Dialog.Title>
+                  <form onSubmit={handleSubmit} className="mt-2">
+                    <input
+                      type="text"
+                      name="name"
+                      value={storeData.name}
+                      onChange={handleChange}
+                      placeholder="Store Name"
+                      className="w-full p-2 border rounded mb-2"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="description"
+                      value={storeData.description}
+                      onChange={handleChange}
+                      placeholder="Description"
+                      className="w-full p-2 border rounded mb-2"
+                    />
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={storeData.phoneNumber}
+                      onChange={handleChange}
+                      placeholder="Phone Number"
+                      className="w-full p-2 border rounded mb-2"
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      value={storeData.email}
+                      onChange={handleChange}
+                      placeholder="Email"
+                      className="w-full p-2 border rounded mb-2"
+                    />
+                    <input
+                      type="text"
+                      name="physicalLocation"
+                      value={storeData.physicalLocation}
+                      onChange={handleChange}
+                      placeholder="Physical Location"
+                      className="w-full p-2 border rounded mb-2"
+                    />
+                    <div className="mt-4">
+                      <button
+                        type="submit"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      >
+                        Register
+                      </button>
+                    </div>
+                  </form>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+    );
+  };
+  
 
 interface OwnerDashboardProps {
     address: Address | null;
@@ -51,6 +166,8 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
     const [storeDetails, setStoreDetails] = useState<any>(null);
     const [giftCards, setGiftCards] = useState<any[]>([]);
     const [businessStats, setBusinessStats] = useState<any>(null);
+    //data for register store modal as dict
+    const [newStoreData, setNewStoreData] = useState<any>(null);
 
     const [isRegisterStoreModalOpen, setIsRegisterStoreModalOpen] = useState(false);
     const [isCreateGiftCardModalOpen, setIsCreateGiftCardModalOpen] = useState(false);
@@ -95,10 +212,11 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
         fetchData();
     }, [address, getTotalPoints, getStoreDetails, getBusinessStats]);
   
+    
     const handleRegisterStore = async () => {
-        if (newStoreName) {
+        if (newStoreData) {
             try {
-                await registerStore(newStoreName);
+                //await registerStore(newStoreData.name, newStoreData. ); // Add empty strings for new fields
                 setNewStoreName("");
                 setIsRegisterStoreModalOpen(false);
                 // Refresh store details
@@ -108,7 +226,6 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
                 }
             } catch (error) {
                 console.error("Error registering store:", error);
-                
             }
         }
     };
@@ -173,13 +290,14 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
 
             {/* Action Buttons */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <button
-                    onClick={() => setIsRegisterStoreModalOpen(true)}
-                    className="bg-blue-500 text-white py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition duration-300 flex items-center justify-center"
-                >
-                    <FaPlusCircle className="mr-2" />
-                    Register Store
-                </button>
+            <button onClick={() => setIsRegisterStoreModalOpen(true)}>Register Store</button>
+      
+      {isRegisterStoreModalOpen && (
+        <RegisterStoreForm
+          onRegister={handleRegisterStore}
+          onClose={() => setIsRegisterStoreModalOpen(false)}
+        />
+      )}
                 <button
                     onClick={() => setIsCreateGiftCardModalOpen(true)}
                     className="bg-green-500 text-white py-3 px-6 rounded-lg shadow-md hover:bg-green-600 transition duration-300 flex items-center justify-center"
@@ -261,51 +379,57 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
                                         Edit Store Details
                                     </Dialog.Title>
                                     <div className="mt-2">
-                                        <input
-                                            type="text"
-                                            value={editStoreName}
-                                            onChange={(e) => setEditStoreName(e.target.value)}
-                                            placeholder="Store Name"
-                                            className="w-full p-2 border rounded mb-2"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={editStoreDescription}
-                                            onChange={(e) => setEditStoreDescription(e.target.value)}
-                                            placeholder="Description"
-                                            className="w-full p-2 border rounded mb-2"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={editStorePhoneNumber}
-                                            onChange={(e) => setEditStorePhoneNumber(e.target.value)}
-                                            placeholder="Phone Number"
-                                            className="w-full p-2 border rounded mb-2"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={editStoreEmail}
-                                            onChange={(e) => setEditStoreEmail(e.target.value)}
-                                            placeholder="Email"
-                                            className="w-full p-2 border rounded mb-2"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={editStorePhysicalLocation}
-                                            onChange={(e) => setEditStorePhysicalLocation(e.target.value)}
-                                            placeholder="Physical Location"
-                                            className="w-full p-2 border rounded mb-2"
-                                        />
-                                    </div>
-
-                                    <div className="mt-4">
-                                        <button
-                                            type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                            onClick={handleEditStore}
-                                        >
-                                            Update
-                                        </button>
+                                    <form onSubmit={handleSubmit} className="mt-2">
+                  <input
+                    type="text"
+                    name="name"
+                    value={storeData.name}
+                    onChange={handleChange}
+                    placeholder="Store Name"
+                    className="w-full p-2 border rounded mb-2"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="description"
+                    value={storeData.description}
+                    onChange={handleChange}
+                    placeholder="Description"
+                    className="w-full p-2 border rounded mb-2"
+                  />
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={storeData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="Phone Number"
+                    className="w-full p-2 border rounded mb-2"
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    value={storeData.email}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    className="w-full p-2 border rounded mb-2"
+                  />
+                  <input
+                    type="text"
+                    name="physicalLocation"
+                    value={storeData.physicalLocation}
+                    onChange={handleChange}
+                    placeholder="Physical Location"
+                    className="w-full p-2 border rounded mb-2"
+                  />
+                  <div className="mt-4">
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    >
+                      Register
+                    </button>
+                  </div>
+                </form>
                                     </div>
                                 </Dialog.Panel>
                             </Transition.Child>
