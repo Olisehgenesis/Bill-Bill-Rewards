@@ -10,15 +10,17 @@ import {
     FaPlusCircle,
     FaUserPlus,
     FaChartLine,
+    FaEdit,
 } from "react-icons/fa";
 import { checkCUSDBalance } from "../contexts/checkUSDBalance";
 
 interface OwnerDashboardProps {
     address: Address | null;
-    registerStore: (name: string) => Promise<void>;
+    registerStore: (name: string, description: string, phoneNumber: string, email: string, physicalLocation: string) => Promise<void>;
     createGiftCard: (value: string, pointCost: number) => Promise<void>;
     awardGiftCard: (giftCardId: number, recipient: Address) => Promise<void>;
     getStoreDetails: (store: Address) => Promise<any>;
+    updateStoreDetails: (name: string, description: string, phoneNumber: string, email: string, physicalLocation: string) => Promise<void>;
     getGiftCardDetails: (giftCardId: number) => Promise<any>;
     getTotalPoints?: (user: Address) => Promise<number | null>;
     addEmployee: (employeeAddress: Address) => Promise<void>;
@@ -31,11 +33,18 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
     createGiftCard,
     awardGiftCard,
     getStoreDetails,
+    updateStoreDetails,
     getGiftCardDetails,
     getTotalPoints,
     addEmployee,
     getBusinessStats,
 }) => {
+    const [isEditStoreModalOpen, setIsEditStoreModalOpen] = useState(false);
+    const [editStoreName, setEditStoreName] = useState("");
+    const [editStoreDescription, setEditStoreDescription] = useState("");
+    const [editStorePhoneNumber, setEditStorePhoneNumber] = useState("");
+    const [editStoreEmail, setEditStoreEmail] = useState("");
+    const [editStorePhysicalLocation, setEditStorePhysicalLocation] = useState("");
     const [balance, setBalance] = useState<string>("");
     const [points, setPoints] = useState<number>(0);
     const [totalPoints, setTotalPoints] = useState<number>(0);
@@ -85,7 +94,7 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
 
         fetchData();
     }, [address, getTotalPoints, getStoreDetails, getBusinessStats]);
-
+  
     const handleRegisterStore = async () => {
         if (newStoreName) {
             try {
@@ -219,8 +228,8 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
             )}
 
             {/* Register Store Modal */}
-            <Transition appear show={isRegisterStoreModalOpen} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={() => setIsRegisterStoreModalOpen(false)}>
+            <Transition appear show={isEditStoreModalOpen} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={() => setIsEditStoreModalOpen(false)}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -249,15 +258,43 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
                                         as="h3"
                                         className="text-lg font-medium leading-6 text-gray-900"
                                     >
-                                        Register Store
+                                        Edit Store Details
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <input
                                             type="text"
-                                            value={newStoreName}
-                                            onChange={(e) => setNewStoreName(e.target.value)}
+                                            value={editStoreName}
+                                            onChange={(e) => setEditStoreName(e.target.value)}
                                             placeholder="Store Name"
-                                            className="w-full p-2 border rounded"
+                                            className="w-full p-2 border rounded mb-2"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={editStoreDescription}
+                                            onChange={(e) => setEditStoreDescription(e.target.value)}
+                                            placeholder="Description"
+                                            className="w-full p-2 border rounded mb-2"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={editStorePhoneNumber}
+                                            onChange={(e) => setEditStorePhoneNumber(e.target.value)}
+                                            placeholder="Phone Number"
+                                            className="w-full p-2 border rounded mb-2"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={editStoreEmail}
+                                            onChange={(e) => setEditStoreEmail(e.target.value)}
+                                            placeholder="Email"
+                                            className="w-full p-2 border rounded mb-2"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={editStorePhysicalLocation}
+                                            onChange={(e) => setEditStorePhysicalLocation(e.target.value)}
+                                            placeholder="Physical Location"
+                                            className="w-full p-2 border rounded mb-2"
                                         />
                                     </div>
 
@@ -265,9 +302,9 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
                                         <button
                                             type="button"
                                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                            onClick={handleRegisterStore}
+                                            onClick={handleEditStore}
                                         >
-                                            Register
+                                            Update
                                         </button>
                                     </div>
                                 </Dialog.Panel>

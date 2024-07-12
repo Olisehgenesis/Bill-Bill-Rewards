@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract RewardTribe {
+contract BillBuddyRewards {
     IERC20 public cUsdToken;
     address public owner;
 
@@ -22,6 +22,10 @@ contract RewardTribe {
         string name;
         address owner;
         bool isActive;
+        string description;
+        string phoneNumber;
+        string email;
+        string physicalLocation;
     }
 
     struct GiftCard {
@@ -38,7 +42,6 @@ contract RewardTribe {
     mapping(uint256 => GiftCard) public giftCards;
     uint256 public giftCardCounter;
     address[] public storeAddresses;
-    address[] public userAddresses;
 
     event UserRegistered(
         address userAddress,
@@ -91,21 +94,28 @@ contract RewardTribe {
         newUser.totalPoints = 0;
         newUser.tier = 0;
         newUser.referrals = 0;
-        userAddresses.push(msg.sender);
         emit UserRegistered(msg.sender, _isShopper, _isBusinessOwner);
     }
 
-    function registerStore(string memory _name) public {
-        require(
-            users[msg.sender].isBusinessOwner,
-            "Only business owners can register stores"
-        );
+    function registerStore(
+        string memory _name,
+        string memory _description,
+        string memory _phoneNumber,
+        string memory _email,
+        string memory _physicalLocation
+    ) public {
         require(!stores[msg.sender].isActive, "Store already registered");
+
         stores[msg.sender] = Store({
             name: _name,
             owner: msg.sender,
-            isActive: true
+            isActive: true,
+            description: _description,
+            phoneNumber: _phoneNumber,
+            email: _email,
+            physicalLocation: _physicalLocation
         });
+
         storeAddresses.push(msg.sender);
         emit StoreRegistered(msg.sender, _name, msg.sender);
     }
@@ -292,12 +302,26 @@ contract RewardTribe {
         );
     }
 
-    function getStoreDetails(
-        address _store
-    ) public view returns (string memory name, address owner, bool isActive) {
-        Store storage store = stores[_store];
-        return (store.name, store.owner, store.isActive);
-    }
+    function getStoreDetails(address _store) public view returns (
+    string memory name,
+    address owner,
+    bool isActive,
+    string memory description,
+    string memory phoneNumber,
+    string memory email,
+    string memory physicalLocation
+) {
+    Store storage store = stores[_store];
+    return (
+        store.name,
+        store.owner,
+        store.isActive,
+        store.description,
+        store.phoneNumber,
+        store.email,
+        store.physicalLocation
+    );
+}
 
     function getGiftCardDetails(
         uint256 _giftCardId
@@ -353,9 +377,5 @@ contract RewardTribe {
 
     function getAllStores() public view returns (address[] memory) {
         return storeAddresses;
-    }
-
-    function getAllUsers() public view returns (address[] memory) {
-        return userAddresses;
     }
 }
