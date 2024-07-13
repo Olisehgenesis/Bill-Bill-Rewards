@@ -20,7 +20,7 @@ const publicClient = createPublicClient({
 export const useRewardTribe = () => {
     const environment = process.env.NEXT_PUBLIC_ENV_MODE as "TESTNET" | "MAINNET";
 
-    console.log("Environment: " + environment);
+
 
     // environment = "TESTNET";
 

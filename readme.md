@@ -1,12 +1,12 @@
-# BillBuddy Rewards: Revolutionizing Customer Loyalty
+# RewardTribe Rewards: Revolutionizing Customer Loyalty
 
-## Welcome to BillBuddy Rewards!
+## Welcome to RewardTribe Rewards!
 
-BillBuddy Rewards is an innovative digital loyalty program designed to enhance the shopping experience for both customers and businesses. Our platform brings a fresh approach to customer rewards, making every purchase more exciting and valuable.
+RewardTribe Rewards is an innovative digital loyalty program designed to enhance the shopping experience for both customers and businesses. Our platform brings a fresh approach to customer rewards, making every purchase more exciting and valuable.
 
-### What is BillBuddy Rewards?
+### What is RewardTribe Rewards?
 
-BillBuddy Rewards is a blockchain-based loyalty system that allows shoppers to earn points on their purchases and redeem them for exciting rewards. It's not just another points system – it's a comprehensive platform that benefits both shoppers and businesses.
+RewardTribe Rewards is a blockchain-based loyalty system that allows shoppers to earn points on their purchases and redeem them for exciting rewards. It's not just another points system – it's a comprehensive platform that benefits both shoppers and businesses.
 
 ### Key Features:
 
@@ -19,18 +19,18 @@ BillBuddy Rewards is a blockchain-based loyalty system that allows shoppers to e
 ### How It Works:
 
 - **For Shoppers**:
-  - Register on the BillBuddy Rewards platform.
+  - Register on the RewardTribe Rewards platform.
   - Shop at participating stores and earn points.
   - Redeem points for gift cards or special offers.
   - Climb the tier ladder for enhanced benefits.
 
 - **For Businesses**:
-  - Join BillBuddy Rewards as a participating store.
+  - Join RewardTribe Rewards as a participating store.
   - Create customized reward programs for your customers.
   - Offer gift cards and special promotions.
   - Gain insights into customer behavior and preferences.
 
-### Why Choose BillBuddy Rewards?
+### Why Choose RewardTribe Rewards?
 
 - **Transparency**: Blockchain technology ensures all transactions and point calculations are transparent and secure.
 - **Flexibility**: Tailor the reward system to suit your business needs.
@@ -39,7 +39,7 @@ BillBuddy Rewards is a blockchain-based loyalty system that allows shoppers to e
 
 ### Get Started Today!
 
-Join BillBuddy Rewards and transform your shopping experience. Whether you're a savvy shopper looking to maximize your purchases or a business aiming to boost customer loyalty, BillBuddy Rewards has something for you.
+Join RewardTribe Rewards and transform your shopping experience. Whether you're a savvy shopper looking to maximize your purchases or a business aiming to boost customer loyalty, RewardTribe Rewards has something for you.
 
 Ready to revolutionize your rewards experience? Sign up now and start earning!
 
@@ -47,6 +47,6 @@ Ready to revolutionize your rewards experience? Sign up now and start earning!
 
 For technical details and integration information, please refer to our developer documentation.
 
-BillBuddy Rewards - Where Every Purchase Counts!
+RewardTribe Rewards - Where Every Purchase Counts!
 
 refer to /setup.md for setup
