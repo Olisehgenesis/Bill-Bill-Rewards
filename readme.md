@@ -49,4 +49,37 @@ For technical details and integration information, please refer to our developer
 
 RewardTribe Rewards - Where Every Purchase Counts!
 
-refer to /setup.md for setup
+## Technical Instructions
+
+1. **Installation**:
+   ```bash
+   run yarn install
+   run yarn dev
+   ```
+
+2. **Environment Setup**:
+   - Rename `removethis.env.local` to `.env.local`
+
+3. **Smart Contract Functions**:
+   - `REWARD_TRIBE_ADDRESS`
+   - `cUSDTokenAddress`
+   - `getUserAddress`
+   - `registerUser`
+   - `registerStore`
+   - `purchaseAndEarnRewards`
+   - `createGiftCard`
+   - `mintRoyaltyGiftCard`
+   - `referProduct`
+   - `getUserDetails`
+   - `getAllStores`
+   - `getGiftCardDetails`
+   - `listUserGiftCards`
+   - `awardGiftCard`
+   - `getStorePoints`
+   - `getTotalPoints`
+   - `getStoreDetails`
+   - `getUserTier`
+
+---
+
+RewardTribe Rewards is here to enhance your shopping and customer loyalty experience. Join us and be part of a revolutionary rewards system today!

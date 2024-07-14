@@ -74,7 +74,13 @@ export const useRewardTribe = () => {
         return receipt;
     }, []);
 
-    const registerStore = useCallback(async (name: string) => {
+    const registerStore = useCallback(async (
+        name: string,
+        description: string,
+        phoneNumber: string,
+        email: string,
+        physicalLocation: string
+    ) => {
         let walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -83,13 +89,11 @@ export const useRewardTribe = () => {
         let [address] = await walletClient.getAddresses();
 
         const tx = await walletClient.writeContract({
-            address: REWARD_TRIBE_ADDRESS
-            ,
-            abi: RewardTribeABI
-            ,
+            address: REWARD_TRIBE_ADDRESS,
+            abi: RewardTribeABI,
             functionName: "registerStore",
             account: address,
-            args: [name],
+            args: [name, description, phoneNumber, email, physicalLocation],
             feeCurrency: cUSDTokenAddress,
         });
 
@@ -99,7 +103,6 @@ export const useRewardTribe = () => {
 
         return receipt;
     }, []);
-
     const purchaseAndEarnRewards = useCallback(async (storeAddress: string, amount: string) => {
         let walletClient = createWalletClient({
             transport: custom(window.ethereum),

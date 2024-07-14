@@ -63,7 +63,9 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
             let [address] = await walletClient.getAddresses();
             if (address) {
                 const details = await getUserDetails(address);
-                if (details) {
+                alert(details);
+                if (details[0] !== '') {
+                    alert("User already registered");
                     setUserDetails(details);
                     setIsRegistered(true);
                     const userBalance = await checkCUSDBalance(address as string);
@@ -87,7 +89,7 @@ const ShopperDashboard: React.FC<ShopperDashboardProps> = ({
             
             await registerUser(email, password, isShopper, isBusinessOwner);
             if (address) {
-                alert(address)
+               
                 const details = await getUserDetails(address);
                 setUserDetails(details);
                 setIsRegistered(true);  // Add this line

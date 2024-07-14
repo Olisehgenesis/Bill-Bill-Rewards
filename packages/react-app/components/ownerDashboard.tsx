@@ -17,6 +17,7 @@ import RegisterStoreForm from "./RegisterStoreForm";
 
 interface OwnerDashboardProps {
     address: Address | null;
+    getAllStores: () => Promise<any[]>;
     registerStore: (name: string, description: string, phoneNumber: string, email: string, physicalLocation: string) => Promise<void>;
     createGiftCard: (value: string, pointCost: number) => Promise<void>;
     awardGiftCard: (giftCardId: number, recipient: Address) => Promise<void>;
@@ -30,7 +31,9 @@ interface OwnerDashboardProps {
 
 const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
     address,
+    getAllStores,
     registerStore,
+
     createGiftCard,
     awardGiftCard,
     getStoreDetails,
@@ -40,8 +43,9 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
     addEmployee,
     getBusinessStats,
 }) => {
+    const [userShops, setUserShops] = useState<any[]>([]);
     const [isEditStoreModalOpen, setIsEditStoreModalOpen] = useState(false);
-    const [editStoreData, setEditStoreData] = useState({
+    const [StoreData, setStoreData] = useState({
         name: "",
         description: "",
         phoneNumber: "",
@@ -85,9 +89,12 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
                     const stats = await getBusinessStats();
                     setBusinessStats(stats);
 
-                    // Fetch gift cards (assuming there's a function to get all gift cards)
-                    // const cards = await getAllGiftCards();
-                    // setGiftCards(cards);
+                    const allStores = await getAllStores();
+                    const filteredStores = allStores.filter(store => store.owner === address);
+                    setUserShops(filteredStores);
+
+                    const cards = await getAllGiftCards();
+                    setGiftCards(cards);
                 } catch (error) {
                     console.error("Error fetching data:", error);
                 }
@@ -97,15 +104,14 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
         fetchData();
     }, [address, getTotalPoints, getStoreDetails, getBusinessStats]);
   
-    
-    const handleRegisterStore = async (storeData) => {
+    const handleRegisterStore = async (StoreData) => {
         try {
             await registerStore(
-                storeData.name,
-                storeData.description,
-                storeData.phoneNumber,
-                storeData.email,
-                storeData.physicalLocation
+                StoreData.name,
+                StoreData.description,
+                StoreData.phoneNumber,
+                StoreData.email,
+                StoreData.physicalLocation
             );
             setIsRegisterStoreModalOpen(false);
             // Refresh store details
@@ -231,6 +237,32 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({
                     </div>
                 </div>
             )}
+            {/* User's Shops Section */}
+<div className="bg-white rounded-lg shadow-md p-6 mb-8">
+  <h3 className="text-2xl font-semibold mb-4 text-gray-800">Your Shops</h3>
+  {userShops.length === 0 ? (
+    <p className="text-gray-600">You haven't created any shops yet.</p>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {userShops.map((shop) => (
+        <div key={shop.id} className="bg-gray-100 rounded-lg p-4">
+          <h4 className="font-semibold text-gray-700">{shop.name}</h4>
+          <p className="text-gray-600">Description: {shop.description}</p>
+          <p className="text-gray-600">Phone: {shop.phoneNumber}</p>
+          <p className="text-gray-600">Email: {shop.email}</p>
+          <p className="text-gray-600">Location: {shop.physicalLocation}</p>
+          <button
+            onClick={() => handleEditStore(shop)}
+            className="mt-2 bg-blue-500 text-white py-1 px-3 rounded-lg shadow-md hover:bg-blue-600 transition duration-300 flex items-center justify-center"
+          >
+            <FaEdit className="mr-2" />
+            Edit
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
 
             {/* Register Store Modal */}
             {isRegisterStoreModalOpen && (

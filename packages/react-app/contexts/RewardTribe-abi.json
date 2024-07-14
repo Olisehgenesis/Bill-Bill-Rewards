@@ -141,6 +141,26 @@
                 "name": "isActive",
                 "type": "bool",
                 "internalType": "bool"
+            },
+            {
+                "name": "description",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "phoneNumber",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "email",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "physicalLocation",
+                "type": "string",
+                "internalType": "string"
             }
         ],
         "stateMutability": "view"
@@ -392,6 +412,26 @@
                 "name": "_name",
                 "type": "string",
                 "internalType": "string"
+            },
+            {
+                "name": "_description",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "_phoneNumber",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "_email",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "_physicalLocation",
+                "type": "string",
+                "internalType": "string"
             }
         ],
         "outputs": [],
@@ -469,6 +509,26 @@
                 "name": "isActive",
                 "type": "bool",
                 "internalType": "bool"
+            },
+            {
+                "name": "description",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "phoneNumber",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "email",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "physicalLocation",
+                "type": "string",
+                "internalType": "string"
             }
         ],
         "stateMutability": "view"
